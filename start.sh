@@ -5,7 +5,7 @@ echo "尝试启动"
 if [ ! -f /app2/config/config.toml ]; then
     cp /app/config.example.toml /app2/config/config.toml
 else
-    cp /app/config/config.toml /app/config.toml  
+    cp /app2/config/config.toml /app/config.toml  
 fi
 
 export TERM=xterm-256color
