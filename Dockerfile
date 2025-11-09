@@ -60,8 +60,8 @@ ENV TTYD_PASS=""
 CMD sh -c "\
     /app2/start.sh && \
     if [ -n \"$TTYD_USER\" ] && [ -n \"$TTYD_PASS\" ]; then \
-        ttyd -W -c \"$TTYD_USER:$TTYD_PASS\" screen -xR mysession sh -c "poetry run python main.py"; \
+        ttyd -W -c \"$TTYD_USER:$TTYD_PASS\" bash -c 'screen -xRR mysession bash -c \"poetry run python main.py\"'; \
     else \
-        ttyd -W screen -xR mysession sh -c "poetry run python main.py" \
+        ttyd -W bash -c 'screen -xRR mysession bash -c \"poetry run python main.py\"'; \
     fi"
 
