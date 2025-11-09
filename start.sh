@@ -18,7 +18,7 @@ mkdir -p "$SCREENDIR"
 chmod 700 "$SCREENDIR"
 
 # 3. 启动后台 screen 会话
-screen -dmS mysession bash -c "poetry run python main.py 2>&1 | tee /tmp/mysession.log"
+screen -dmS mysession sh -ic "export TERM=xterm-256color; poetry run python main.py 2>&1 | tee /tmp/mysession.log"
 
 # 4. 等待 session 就绪
 sleep 2
@@ -26,8 +26,8 @@ sleep 2
 # 5. 启动 ttyd（前台运行）
 if [ -n "$TTYD_USER" ] && [ -n "$TTYD_PASS" ]; then
     echo "[INFO] Starting ttyd with auth..."
-    exec ttyd -W -c "$TTYD_USER:$TTYD_PASS" screen -xRR mysession
+    exec ttyd -W -c "$TTYD_USER:$TTYD_PASS" --term xterm-256color screen -xRR mysession
 else
     echo "[INFO] Starting ttyd without auth..."
-    exec ttyd -W screen -xRR mysession
+    exec ttyd -W --term xterm-256color screen -xRR mysession
 fi
