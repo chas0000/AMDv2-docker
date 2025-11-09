@@ -16,7 +16,7 @@ jobs:
     outputs:
       digest: ${{ steps.build.outputs.digest }}
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -33,7 +33,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set BUILD_DATE
         run: echo "BUILD_DATE=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
@@ -47,7 +47,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:amd64-${{ env.BUILD_DATE }}
-            ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:amd64-${{ env.BUILD_DATE }}
+            ghcr.io/${{ github.actor }}/$IMAGE_NAME:amd64-${{ env.BUILD_DATE }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache,mode=max
 
@@ -58,7 +58,7 @@ jobs:
     outputs:
       digest: ${{ steps.build.outputs.digest }}
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up QEMU
@@ -78,7 +78,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set BUILD_DATE
         run: echo "BUILD_DATE=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
@@ -92,7 +92,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:arm64-${{ env.BUILD_DATE }}
-            ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:arm64-${{ env.BUILD_DATE }}
+            ghcr.io/${{ github.actor }}/$IMAGE_NAME:arm64-${{ env.BUILD_DATE }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache,mode=max
 
@@ -115,17 +115,20 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create multi-arch manifest and push
         run: |
           BUILD_DATE=$(date +'%Y%m%d%H%M')
+
+          # Docker Hub multi-arch
           docker manifest create ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest \
             --amend ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:amd64-${BUILD_DATE} \
             --amend ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:arm64-${BUILD_DATE}
           docker manifest push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
 
-          docker manifest create ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:latest \
-            --amend ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:amd64-${BUILD_DATE} \
-            --amend ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:arm64-${BUILD_DATE}
-          docker manifest push ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:latest
+          # GHCR multi-arch
+          docker manifest create ghcr.io/${{ github.actor }}/$IMAGE_NAME:latest \
+            --amend ghcr.io/${{ github.actor }}/$IMAGE_NAME:amd64-${BUILD_DATE} \
+            --amend ghcr.io/${{ github.actor }}/$IMAGE_NAME:arm64-${BUILD_DATE}
+          docker manifest push ghcr.io/${{ github.actor }}/$IMAGE_NAME:latest
