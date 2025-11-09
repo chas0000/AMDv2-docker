@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 echo "尝试启动"
 # 1. 检查 /app2/amdl/config.toml 是否存在
