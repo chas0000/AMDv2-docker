@@ -60,8 +60,14 @@ ENV TTYD_PASS=""
 CMD sh -c '\
     /app2/start.sh && \
     screen -dmS mysession sh -c "poetry run python main.py" && \
+    echo "Waiting for screen session to initialize..." && \
+    for i in $(seq 1 10); do \
+        screen -list | grep -q "mysession" && break; \
+        sleep 1; \
+    done && \
     if [ -n "$TTYD_USER" ] && [ -n "$TTYD_PASS" ]; then \
         ttyd -W -c "$TTYD_USER:$TTYD_PASS" bash -c "screen -xRR mysession"; \
     else \
         ttyd -W bash -c "screen -xRR mysession"; \
     fi'
+
