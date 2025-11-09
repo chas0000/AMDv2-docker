@@ -24,7 +24,7 @@ SESSION_NAME=mysession
 # 4. 启动 tmux session 后台运行 Python（只启动一次）
 if ! tmux has-session -t $SESSION_NAME 2>/dev/null; then
     echo "[INFO] Creating tmux session $SESSION_NAME..."
-    tmux new-session -d -s $SESSION_NAME "poetry run python main.py; exec bash"
+    tmux new-session -d -s $SESSION_NAME "poetry run python main.py; exec sh"
 else
     echo "[INFO] tmux session $SESSION_NAME already exists, reusing..."
 fi
