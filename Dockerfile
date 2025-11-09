@@ -59,7 +59,8 @@ ENV TTYD_PASS=""
 #CMD ["poetry", "run", "python", "main.py"]
 CMD sh -c '\
     /app2/start.sh && \
-    export SCREENDIR=/tmp/screen && mkdir -p $SCREENDIR && \
+    export SCREENDIR=/tmp/screen && \
+    mkdir -p $SCREENDIR && chmod 700 $SCREENDIR && \
     screen -dmS mysession sh -c "poetry run python main.py" && \
     echo "Waiting for screen session to initialize..." && \
     for i in $(seq 1 10); do \
