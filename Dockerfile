@@ -1,6 +1,6 @@
 FROM python:3-alpine
 
-RUN apk add --no-cache git ttyd screen
+RUN apk add --no-cache git ttyd tmux
 RUN git clone --depth=1 https://github.com/WorldObservationLog/AppleMusicDecrypt.git /app
 
 WORKDIR /app
