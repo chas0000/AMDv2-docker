@@ -1,9 +1,11 @@
 FROM python:3-alpine
 
+RUN git clone https://github.com/WorldObservationLog/AppleMusicDecrypt.git /app
+
 WORKDIR /app
 
-COPY . /app
-
+#COPY . /app
+COPY ./start.sh /app2/
 # Install Poetry
 RUN set -eux; \
     apk add --no-cache curl; \
@@ -48,5 +50,15 @@ RUN set -eux; \
     \
     export PATH="/root/.local/bin:$PATH"; \
     poetry install;
+# 设置环境变量，用户可以在 docker run 时覆盖
+ENV TTYD_USER=""
+ENV TTYD_PASS=""
 
-CMD ["poetry", "run", "python", "main.py"]
+#CMD ["poetry", "run", "python", "main.py"]
+CMD sh -c "\
+    /app/start.sh && \
+    if [ -n \"$TTYD_USER\" ] && [ -n \"$TTYD_PASS\" ]; then \
+        ttyd -W -c \"$TTYD_USER:$TTYD_PASS\" screen -xR mysession sh; \
+    else \
+        ttyd -W screen -xR mysession sh; \
+    fi"
