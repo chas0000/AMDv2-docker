@@ -6,9 +6,6 @@ on:
   #    - main
   workflow_dispatch:
 
-env:
-  IMAGE_NAME: amdv2
-
 jobs:
   # 构建 amd64 镜像
   build-amd64:
@@ -46,10 +43,10 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:amd64-${{ env.BUILD_DATE }}
-            ghcr.io/${{ github.actor }}/$IMAGE_NAME:amd64-${{ env.BUILD_DATE }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache,mode=max
+            ${{ secrets.DOCKER_USERNAME }}/amdv2:amd64-${{ env.BUILD_DATE }}
+            ghcr.io/${{ github.actor }}/amdv2:amd64-${{ env.BUILD_DATE }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache,mode=max
 
   # 构建 arm64 镜像
   build-arm64:
@@ -91,10 +88,10 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:arm64-${{ env.BUILD_DATE }}
-            ghcr.io/${{ github.actor }}/$IMAGE_NAME:arm64-${{ env.BUILD_DATE }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:cache,mode=max
+            ${{ secrets.DOCKER_USERNAME }}/amdv2:arm64-${{ env.BUILD_DATE }}
+            ghcr.io/${{ github.actor }}/amdv2:arm64-${{ env.BUILD_DATE }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache,mode=max
 
   # 合并成 multi-arch 镜像并打最终 tag
   create-multiarch:
@@ -122,13 +119,13 @@ jobs:
           BUILD_DATE=$(date +'%Y%m%d%H%M')
 
           # Docker Hub multi-arch
-          docker manifest create ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest \
-            --amend ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:amd64-${BUILD_DATE} \
-            --amend ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:arm64-${BUILD_DATE}
-          docker manifest push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
+          docker manifest create ${{ secrets.DOCKER_USERNAME }}/amdv2:latest \
+            --amend ${{ secrets.DOCKER_USERNAME }}/amdv2:amd64-${BUILD_DATE} \
+            --amend ${{ secrets.DOCKER_USERNAME }}/amdv2:arm64-${BUILD_DATE}
+          docker manifest push ${{ secrets.DOCKER_USERNAME }}/amdv2:latest
 
           # GHCR multi-arch
-          docker manifest create ghcr.io/${{ github.actor }}/$IMAGE_NAME:latest \
-            --amend ghcr.io/${{ github.actor }}/$IMAGE_NAME:amd64-${BUILD_DATE} \
-            --amend ghcr.io/${{ github.actor }}/$IMAGE_NAME:arm64-${BUILD_DATE}
-          docker manifest push ghcr.io/${{ github.actor }}/$IMAGE_NAME:latest
+          docker manifest create ghcr.io/${{ github.actor }}/amdv2:latest \
+            --amend ghcr.io/${{ github.actor }}/amdv2:amd64-${BUILD_DATE} \
+            --amend ghcr.io/${{ github.actor }}/amdv2:arm64-${BUILD_DATE}
+          docker manifest push ghcr.io/${{ github.actor }}/amdv2:latest
