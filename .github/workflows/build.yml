@@ -43,7 +43,7 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ${{ secrets.DOCKER_USERNAME }}/AMDv2:latest
-          ${{ secrets.DOCKER_USERNAME }}/AMDv2:${{ env.BUILD_DATE }}
-          ghcr.io/${{ github.repository_owner }}/AMDv2:latest
-          ghcr.io/${{ github.repository_owner }}/AMDv2:${{ env.BUILD_DATE }}
+          ${{ secrets.DOCKER_USERNAME }}/amdv2:latest
+          ${{ secrets.DOCKER_USERNAME }}/amdv2:${{ env.BUILD_DATE }}
+          ghcr.io/${{ github.repository_owner }}/amdv2:latest
+          ghcr.io/${{ github.repository_owner }}/amdv2:${{ env.BUILD_DATE }}
