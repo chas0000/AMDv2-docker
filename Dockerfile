@@ -1,5 +1,6 @@
 FROM python:3-alpine
 
+RUN apk add --no-cache git
 RUN git clone https://github.com/WorldObservationLog/AppleMusicDecrypt.git /app
 
 WORKDIR /app
@@ -16,7 +17,7 @@ ENV PATH="/root/.local/bin:$PATH"
 
 # Build GPAC and Bento4
 RUN set -eux; \
-    apk add --no-cache git g++ make cmake zlib-dev coreutils; \
+    apk add --no-cache  g++ make cmake zlib-dev coreutils; \
     \
     # Build and install GPAC
     \
