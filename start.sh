@@ -14,18 +14,17 @@ fi
 export TERM=xterm-256color
 export LANG=zh_CN.UTF-8
 
-# 3. 设置 tmux socket 目录，保证权限
+# 3. 设置 tmux socket 目录
 export TMUX_TMPDIR=/tmp/tmux
 mkdir -p "$TMUX_TMPDIR"
 chmod 700 "$TMUX_TMPDIR"
 
 SESSION_NAME=mysession
 
-# 4. 启动 tmux session 后台运行 Python
-#    如果 session 已存在则重用
+# 4. 启动 tmux session 后台运行 Python（只启动一次）
 if ! tmux has-session -t $SESSION_NAME 2>/dev/null; then
     echo "[INFO] Creating tmux session $SESSION_NAME..."
-    tmux new-session -d -s $SESSION_NAME "poetry run python main.py; exec sh"
+    tmux new-session -d -s $SESSION_NAME "poetry run python main.py; exec bash"
 else
     echo "[INFO] tmux session $SESSION_NAME already exists, reusing..."
 fi
@@ -33,11 +32,18 @@ fi
 # 5. 等待 session 就绪
 sleep 2
 
-# 6. 启动 ttyd 并 attach tmux session
+# 6. 清理可能的嵌套 tmux 环境
+unset TMUX
+
+# 7. 启动 ttyd 并 attach tmux session
+TTYD_CMD="tmux attach -t $SESSION_NAME"
+
 if [ -n "$TTYD_USER" ] && [ -n "$TTYD_PASS" ]; then
     echo "[INFO] Starting ttyd with auth..."
-    ttyd -W -c "$TTYD_USER:$TTYD_PASS" tmux attach -t $SESSION_NAME
+    ttyd -W -c "$TTYD_USER:$TTYD_PASS" $TTYD_CMD
 else
     echo "[INFO] Starting ttyd without auth..."
-    ttyd -W tmux attach -t $SESSION_NAME
+    ttyd -W $TTYD_CMD
 fi
+
+# ttyd 前台运行，start.sh 不退出
