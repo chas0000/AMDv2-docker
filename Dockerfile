@@ -7,6 +7,7 @@ WORKDIR /app
 
 #COPY . /app
 COPY ./start.sh /app2/
+RUN chmod 755 /app2/start.sh
 # Install Poetry
 RUN set -eux; \
     apk add --no-cache curl; \
