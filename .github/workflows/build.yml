@@ -116,7 +116,8 @@ jobs:
 
       - name: Create multi-arch manifest and push
         run: |
-
+          BUILD_DATE_AMD64=${{ needs.build-amd64.outputs.build_date }}
+          BUILD_DATE_ARM64=${{ needs.build-arm64.outputs.build_date }}
           # Docker Hub multi-arch
           docker manifest create ${{ secrets.DOCKER_USERNAME }}/amdv2:latest \
             --amend ${{ secrets.DOCKER_USERNAME }}/amdv2:amd64-${BUILD_DATE} \
