@@ -116,7 +116,6 @@ jobs:
 
       - name: Create multi-arch manifest and push
         run: |
-          export TZ='Asia/Shanghai' && echo "BUILD_DATE=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
 
           # Docker Hub multi-arch
           docker manifest create ${{ secrets.DOCKER_USERNAME }}/amdv2:latest \
