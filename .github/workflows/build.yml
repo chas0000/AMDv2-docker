@@ -45,8 +45,8 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/amdv2:amd64-${{ env.BUILD_DATE }}
             ghcr.io/${{ github.actor }}/amdv2:amd64-${{ env.BUILD_DATE }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:amd64-cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:amd64-cache,mode=max
 
   # 构建 arm64 镜像
   build-arm64:
@@ -90,8 +90,8 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/amdv2:arm64-${{ env.BUILD_DATE }}
             ghcr.io/${{ github.actor }}/amdv2:arm64-${{ env.BUILD_DATE }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:cache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:arm64-cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/amdv2:arm64-cache,mode=max
 
   # 合并成 multi-arch 镜像并打最终 tag
   create-multiarch:
